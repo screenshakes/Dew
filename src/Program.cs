@@ -1,0 +1,103 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+
+using SK.Libretro;
+
+namespace Dew
+{
+    static class Program
+    {
+        static Discord discord;
+        static Libretro libretro;
+        static bool waitingForVote;
+
+        static void Main(string[] args) => Program.MainAsync().GetAwaiter().GetResult();
+
+        static async Task MainAsync()
+        {
+            Platform = GetPlatform();
+            AbsolutePath = Directory.GetParent(System.Reflection.Assembly.GetEntryAssembly().Location).FullName;
+            
+            discord = new Discord(Settings.BotId, Settings.ChannelId);
+            discord.OnButtonReaction += OnButtonReaction;
+            discord.OnReady += () => Simulate(0,0);
+            
+            libretro = new Libretro(Settings.Core, "",  Settings.RomName);
+
+            Bans = new HashSet<ulong>();
+            if(File.Exists(Path.Combine(AbsolutePath, "bans")))
+            foreach(var l in File.ReadAllLines(Path.Combine(AbsolutePath, "bans")))
+                Bans.Add(ulong.Parse(l));
+
+            await discord.Start(File.ReadAllText(Path.Combine(AbsolutePath, "token")));
+            
+            while(true)
+            {
+                await Task.Delay(500);
+                GC.Collect();
+            }
+        }
+
+        async static Task Simulate(uint input, int pressDuration)
+        {
+            await discord.ClearMessages();
+            var gif = libretro.Simulate(Settings.GIFDuration, input, pressDuration);
+
+            var task = discord.SendGIF(gif);
+            while(await Task.WhenAny(task, Task.Delay(5000)) != task);
+        }
+
+        async static Task OnButtonReaction(Dictionary<string, int> buttons, Action<int> callback)
+        {
+            if(!waitingForVote)
+            {
+                waitingForVote = true;
+
+                await Task.Delay(Settings.VoteDuration);
+
+                var maxCount = 0;
+                var button = "NONE";
+
+                foreach(var b in buttons)
+                    if(b.Value > maxCount)
+                    {
+                        maxCount = b.Value;
+                        button = b.Key;
+                    }
+
+                foreach(var b in Settings.Buttons)
+                    if(b.Item2.Contains(button))
+                    {
+                        await Simulate(b.Item1, b.Item3);
+                        waitingForVote = false;
+                        break;
+                    }
+
+                if(waitingForVote)
+                {
+                    await Simulate(0,0);
+                    waitingForVote = false;
+                }
+
+                callback.Invoke(libretro.state);
+            }
+        }
+
+        static LibretroTargetPlatform GetPlatform()
+        {
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return LibretroTargetPlatform.WindowsPlayer;
+            else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return LibretroTargetPlatform.LinuxPlayer;
+            else return LibretroTargetPlatform.OSXPlayer;
+        }
+
+        public static LibretroTargetPlatform Platform { get; private set; }
+        public static string AbsolutePath { get; private set; }
+        public static HashSet<ulong> Bans { get; private set; }
+    }
+}
