@@ -23,7 +23,7 @@ It is based on [Discord.Net](https://github.com/discord-net/Discord.Net) and [SK
    * **Core**: the name of the emulator you will be using
    * **RomName**: the name of the game rom (without the extension)
 7) In your console go to the **src** folder and compile the project with `dotnet build --configuration Release`
-8) Go to bin/Release/netcoreapp3.1 and create a file named **token** that contains your bot token
+8) Go to bin/Release/netcoreapp3.1 and create a file named **token** (without any extension) that contains your bot token
 9) In netcoreapp3.1, create new folders like this: **netcoreapp3.1/libretro/cores**
 10) Download the **core** you want to use [here](https://buildbot.libretro.com/nightly/) and place it in the **cores folder**
 11) Place your **game rom** in the netcoreapp3.1 folder and run the bot
