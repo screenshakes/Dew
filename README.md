@@ -20,7 +20,7 @@ It is based on [Discord.Net](https://github.com/discord-net/Discord.Net) and [SK
    * **BotId**: the Id of your bot
    * **ChannelId**: the channel in which your bot will be sending messages
    * **InputMessage**: the message to which people will be reacting
-   * **Core**: the name of the emulator you will be using
+   * **Core**: the name of the emulator you will be using (without _libretro.dll)
    * **RomName**: the name of the game rom (without the extension)
 7) In your console go to the **src** folder and compile the project with `dotnet build --configuration Release`
 8) Go to bin/Release/netcoreapp3.1 and create a file named **token** (without any extension) that contains your bot token
