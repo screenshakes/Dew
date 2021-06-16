@@ -35,7 +35,6 @@ namespace SK.Libretro
 
         public unsafe void Callback(void* data, uint width, uint height, ulong pitch)
         {
-            Console.WriteLine(pitch);
             if (Processor == null)
                 return;
 
