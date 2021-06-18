@@ -14,6 +14,7 @@ namespace Dew
         static Discord discord;
         static Libretro libretro;
         static bool waitingForVote;
+        static int autoPlay;
 
         static void Main(string[] args) => Program.MainAsync().GetAwaiter().GetResult();
 
@@ -56,6 +57,7 @@ namespace Dew
             if(!waitingForVote)
             {
                 waitingForVote = true;
+                if(buttons.Count > 0) autoPlay = Settings.AutoPlayDuration;
 
                 await Task.Delay(Settings.VoteDuration);
 
@@ -84,6 +86,12 @@ namespace Dew
                 }
 
                 callback.Invoke(libretro.state);
+
+                if(autoPlay > 0)
+                {
+                    --autoPlay;
+                    await OnButtonReaction(buttons, callback);
+                }
             }
         }
 

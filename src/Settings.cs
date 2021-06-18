@@ -9,6 +9,7 @@ namespace Dew
         public const int GIFDuration = 60; // In frames
         public const int GIFFrameSkip = 1;
         public const int VoteDuration = 2500; // In milliseconds
+        public const int AutoPlayDuration = 5; // Number of simulations that should be done after an input even if no new input is sent
 
         public const ulong BotId = 0;
         public const ulong ChannelId = 0;
