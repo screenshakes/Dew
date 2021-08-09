@@ -43,7 +43,7 @@ namespace Dew
             wrapper.Update();
         }
 
-        public string Simulate(int duration, uint input, int pressDuration)
+        public string Simulate(int duration, uint input, Func<int, bool> pressFunction)
         {
             while(state > -1 && !LoadState(state))
             {
@@ -56,7 +56,7 @@ namespace Dew
             for(int i = 0; i < duration + Settings.GIFFrameSkip; ++i)
             {
                 renderer.Record = i >= Settings.GIFFrameSkip && i % 2 == 0;
-                SetInput(input, i < pressDuration);
+                SetInput(input, pressFunction.Invoke(i));
                 Update();
             }
 

@@ -25,7 +25,7 @@ namespace Dew
             
             discord = new Discord(Settings.BotId, Settings.ChannelId);
             discord.OnButtonReaction += OnButtonReaction;
-            discord.OnReady += () => Simulate(0,0);
+            discord.OnReady += () => Simulate(0, (frame) => false);
             
             libretro = new Libretro(Settings.Core, "",  Settings.RomName);
 
@@ -43,10 +43,10 @@ namespace Dew
             }
         }
 
-        async static Task Simulate(uint input, int pressDuration)
+        async static Task Simulate(uint input, Func<int, bool> pressFunction)
         {
             await discord.ClearMessages();
-            var gif = libretro.Simulate(Settings.GIFDuration, input, pressDuration);
+            var gif = libretro.Simulate(Settings.GIFDuration, input, pressFunction);
 
             var task = discord.SendGIF(gif);
             while(await Task.WhenAny(task, Task.Delay(5000)) != task);
@@ -81,7 +81,7 @@ namespace Dew
 
                 if(waitingForVote)
                 {
-                    await Simulate(0,0);
+                    await Simulate(0, (frame) => false);
                     waitingForVote = false;
                 }
 

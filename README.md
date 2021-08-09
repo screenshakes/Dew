@@ -30,9 +30,17 @@ It is based on [Discord.Net](https://github.com/discord-net/Discord.Net) and [SK
 
 # Customizing inputs
 You can modify the Buttons array from the Settings class to customize inputs
-This is mostly useful in cases where you want to have longer or shorter movement inputs
+This is mostly useful in cases where you want to have longer movements or turbo press
  
 The button is composed of 3 variables:  
 1) The Id of the libretro button  
 2) The UTF value of the emoji or Id for [custom emojis](https://docs.stillu.cc/api/Discord.Emote.html)  
-3) The duration of the button press in frames  
+3) The function that is used to determine wether or not the button is pressed
+
+Here are basic examples of press functions:
+1) (frame) => true  
+   Press the button for the whole duration of the gif  
+2) (frame) => frame < 16  
+   Press the button until frame 15 (included)
+3) (frame) => frame % 5 == 0  
+   Press the button every 5 frames, starting at frame 5  

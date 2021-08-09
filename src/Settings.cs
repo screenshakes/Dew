@@ -1,3 +1,4 @@
+using System;
 using SK.Libretro;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
@@ -24,17 +25,17 @@ namespace Dew
         public static bool DestroyStates = true;
         public static bool LogReactions = false;
         
-        public static readonly (uint, string, int)[] Buttons = new (uint, string, int)[]
+        public static readonly (uint, string, Func<int, bool>)[] Buttons = new (uint, string, Func<int, bool>)[]
         {
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_A,      "\U0001F170", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_B,      "\U0001F171", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_UP,     "\U0001F53C", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_DOWN,   "\U0001F53D", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_LEFT,   "\U000025C0", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_RIGHT,  "\U000025B6", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_START,  "\U00002795", 16),
-            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_SELECT, "\U00002796", 16),
-            (256, "\U0000274C", 0) // Skip
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_A,      "\U0001F170", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_B,      "\U0001F171", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_UP,     "\U0001F53C", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_DOWN,   "\U0001F53D", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_LEFT,   "\U000025C0", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_RIGHT,  "\U000025B6", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_START,  "\U00002795", (frame) => frame <= 16),
+            (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_SELECT, "\U00002796", (frame) => frame <= 16),
+            (256, "\U0000274C", (frame) => false) // Skip
         };
     }
 }
