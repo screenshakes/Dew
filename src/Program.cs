@@ -47,7 +47,6 @@ namespace Dew
         {
             await discord.ClearMessages();
             var gif = libretro.Simulate(Settings.GIFDuration, input, pressFunction);
-
             var task = discord.SendGIF(gif);
             while(await Task.WhenAny(task, Task.Delay(5000)) != task);
         }
@@ -62,7 +61,7 @@ namespace Dew
                 await Task.Delay(Settings.VoteDuration);
 
                 var maxCount = 0;
-                var button = "NONE";
+                var button = "";
 
                 foreach(var b in buttons)
                     if(b.Value > maxCount)
@@ -71,13 +70,12 @@ namespace Dew
                         button = b.Key;
                     }
 
-                foreach(var b in Settings.Buttons)
-                    if(b.Item2.Contains(button))
-                    {
-                        await Simulate(b.Item1, b.Item3);
+                if(button != "")
+                {
+                    var input = Settings.Buttons[int.Parse(button)];
+                    await Simulate(input.Item1, input.Item3);
                         waitingForVote = false;
-                        break;
-                    }
+                }
 
                 if(waitingForVote)
                 {

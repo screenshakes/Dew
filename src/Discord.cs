@@ -12,7 +12,7 @@ namespace Dew
         DiscordSocketClient client;
         IMessageChannel channel;
         Dictionary<string, int> buttons;
-        Dictionary<ulong, string> userInputs;
+        Dictionary<string, string> userInputs;
         List<(ulong, string)> logs;
         IMessage inputMessage;
         Random random;
@@ -21,7 +21,7 @@ namespace Dew
         public Discord(ulong user, ulong channel)
         {
             buttons = new Dictionary<string, int>();
-            userInputs = new Dictionary<ulong, string>();
+            userInputs = new Dictionary<string, string>();
             logs = new List<(ulong, string)>();
             client = new DiscordSocketClient();
 
@@ -31,33 +31,7 @@ namespace Dew
             client.Disconnected += async (e) => Environment.Exit(1);
             client.Ready += () => SetChannel(channel);
             client.Ready += () => OnReady();
-            client.Ready += async () => {
-                inputMessage = await this.channel.GetMessageAsync(Settings.InputMessage);
-                await AddButtons(inputMessage);
-            };
-            client.ReactionAdded += async (m, c, r) => {
-                if(r.UserId != userId && m.Id == Settings.InputMessage)
-                {
-                    logs.Add((r.UserId, r.Emote.Name));
-
-                    if(userInputs.ContainsKey(r.UserId))
-                    {
-                        --buttons[userInputs[r.UserId]];
-                        userInputs[r.UserId] = r.Emote.Name;
-                    }
-                    else userInputs.Add(r.UserId, r.Emote.Name);
-
-                    if(!buttons.ContainsKey(r.Emote.Name))
-                        buttons.Add(r.Emote.Name, 1);
-                    else ++buttons[r.Emote.Name];
-
-                    OnButtonReaction(buttons, (state) => {
-                        userInputs.Clear();
-                        buttons.Clear();
-                        SaveLogs(state);
-                    });
-                }
-            };
+            client.ButtonExecuted += ButtonHandler;
 
             userId = user;
         }
@@ -97,19 +71,17 @@ namespace Dew
 
         public async Task<IMessage> SendGIF(string path)
         {
-            var message = await channel.SendFileAsync(path);
-            return message;
-        }
-
-        public async Task AddButtons(IMessage message)
-        {
-            await message.RemoveAllReactionsAsync();
+            var builder = new ComponentBuilder();
+            var index = 0;
             foreach(var b in Settings.Buttons)
             {
-                await Task.Delay(250);
-                if(b.Item2.Contains("<")) await message.AddReactionAsync(Emote.Parse(b.Item2));
-                else await message.AddReactionAsync(new Emoji(b.Item2));
+                if(b.Item2.Contains("\\")) builder.WithButton(" ", index.ToString(), emote : new Emoji(b.Item2), style: ButtonStyle.Secondary);
+                else builder.WithButton(b.Item2, index.ToString(), style: ButtonStyle.Secondary);
+                ++index;
             }
+
+            var message = await channel.SendFileAsync(path, component: builder.Build());
+            return message;
         }
 
         public async Task ClearMessages()
@@ -122,9 +94,28 @@ namespace Dew
             }
         }
 
-        public async Task SendMessage(string message)
+        public async Task ButtonHandler(SocketMessageComponent component)
         {
-            await channel.SendMessageAsync(message);
+            var user = component.User.Id;
+            var button = component.Data.CustomId;
+            logs.Add((user, button));
+
+            if(userInputs.ContainsKey(button))
+            {
+                --buttons[userInputs[button]];
+                userInputs[button] = button;
+            }
+            else userInputs.Add(button, button);
+
+            if(!buttons.ContainsKey(button))
+                buttons.Add(button, 1);
+            else ++buttons[button];
+
+            OnButtonReaction(buttons, (state) => {
+                userInputs.Clear();
+                buttons.Clear();
+                SaveLogs(state);
+            });
         }
 
         public Func<Dictionary<string, int>, Action<int>, Task> OnButtonReaction;

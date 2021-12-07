@@ -6,6 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="*"/>
-    <PackageReference Include="Discord.Net" Version="*"/>
+    <PackageReference Include="Discord.Net.Labs" Version="3.4.9"/>
   </ItemGroup>
 </Project>

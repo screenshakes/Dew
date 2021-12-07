@@ -55,7 +55,7 @@ namespace Dew
 
             for(int i = 0; i < duration + Settings.GIFFrameSkip; ++i)
             {
-                renderer.Record = i >= Settings.GIFFrameSkip && i % 2 == 0;
+                renderer.Record = i >= Settings.GIFFrameSkip && i % Settings.GIFBlankSkip == 0;
                 SetInput(input, pressFunction.Invoke(i));
                 Update();
             }

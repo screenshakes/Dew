@@ -7,14 +7,14 @@ namespace Dew
 {
     static class Settings
     {
-        public const int GIFDuration = 60; // In frames
-        public const int GIFFrameSkip = 1;
+        public const int GIFDuration = 120; // In frames
+        public const int GIFFrameSkip = 0; // How many frames should be skipped at the beginning of the gif
+        public const int GIFBlankSkip = 4; // How often should frames be added to the gif (once every 2, 3, 4, ...)
         public const int VoteDuration = 2500; // In milliseconds
-        public const int AutoPlayDuration = 5; // Number of simulations that should be done after an input even if no new input is sent
+        public const int AutoPlayDuration = 0; // Number of simulations that should be done after an input even if no new input is sent
 
         public const ulong BotId = 0;
         public const ulong ChannelId = 0;
-        public const ulong InputMessage = 0;
 
         public const string Core = "";
         public const string RomName = "";
@@ -35,7 +35,7 @@ namespace Dew
             (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_RIGHT,  "\U000025B6", (frame) => frame <= 16),
             (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_START,  "\U00002795", (frame) => frame <= 16),
             (LibretroHeader.RETRO_DEVICE_ID_JOYPAD_SELECT, "\U00002796", (frame) => frame <= 16),
-            (256, "\U0000274C", (frame) => false) // Skip
+            (256, "Skip", (frame) => false) // Skip
         };
     }
 }
