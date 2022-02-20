@@ -21,8 +21,8 @@ namespace Dew
 
         public const int Upscale = 2;
         public static readonly IResampler UpscaleAlgorithm = KnownResamplers.NearestNeighbor;
-        public static bool DestroyGIFs = false;
-        public static bool DestroyStates = true;
+        public static int KeepEveryNthState = 1; // Set to 1 to keep every state
+        public static int KeepEveryNthGIF = 1; // Set to 1 to keep every GIF
         public static bool LogReactions = false;
         
         public static readonly (uint, string, Func<int, bool>)[] Buttons = new (uint, string, Func<int, bool>)[]

@@ -60,13 +60,13 @@ namespace Dew
                 Update();
             }
 
-            if(Settings.DestroyGIFs)
+            if(state % Settings.KeepEveryNthGIF != 0)
             {
                 var gif = Program.AbsolutePath + $"/GIFs/{state}.gif";
                 if(File.Exists(gif)) File.Delete(gif);
             }
 
-            if(Settings.DestroyStates) 
+            if(state % Settings.KeepEveryNthState != 0) 
             {
                 var statePath = Program.AbsolutePath + $"/libretro/saves/{Settings.Core}/{Settings.RomName}/save_{state}.state";
                 if(File.Exists(statePath)) File.Delete(statePath);
