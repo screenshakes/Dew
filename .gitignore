@@ -1,3 +1,7 @@
 ﻿src/obj
 src/bin
 .vscode
+# For docker setups
+ROMs/
+cores/
+token

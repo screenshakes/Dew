@@ -12,6 +12,8 @@ It is based on [Discord.Net](https://github.com/discord-net/Discord.Net) and [SK
 .NET Core 3.1
 
 # How to
+
+
 1) Clone this repo
 2) Create a **new Discord bot** from the [developer portal](https://discord.com/developers/applications)
 3) Create an invite link with **messaging and message managing**
@@ -26,6 +28,17 @@ It is based on [Discord.Net](https://github.com/discord-net/Discord.Net) and [SK
 9) In netcoreapp3.1, create new folders like this: **netcoreapp3.1/libretro/cores**
 10) Download the **core** you want to use [here](https://buildbot.libretro.com/nightly/) and place it in the **cores folder**
 11) Place your **game rom** in the netcoreapp3.1 folder and run the bot
+
+Alternatively you can use Docker with the provided Dockerfile
+
+Steps 1 to 6 are the same as above
+7) Create a folder called `ROMs/` in the project root and place your game ROM in it
+8) Create a folder called `cores/` in the project root and place the libretro core ([download it here](https://buildbot.libretro.com/nightly/)) in it too
+9) Create a text file called `token` in the project root and paste your bot token in it
+10) ``docker build -e ROM='your_rom_name' -e CORE='your_core_name' -t dew .``. The core name should be specified without the ``_libretro.so`` extension, and the ROM name should be specified without the extension
+11) ``docker run dew`` should now start the bot. If you want to run the bot in the background, use ``docker run -d dew``
+
+The Dockerfile exposes a volume to store the saves, you can mount it to a folder on your host machine to keep your saves between rebuilds
 
 # Customizing inputs
 You can modify the Buttons array from the Settings class to customize inputs
