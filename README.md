@@ -37,7 +37,7 @@ Steps 1 to 6 are the same as above
 8) Create a folder called `cores/` in the project root and place the libretro core ([download it here](https://buildbot.libretro.com/nightly/)) in it too
 9) Create a text file called `token` in the project root and paste your bot token in it
 10) Run ``docker build -e ROM='your_rom_name' -e CORE='your_core_name' -t dew .`` in your terminal. The core name should be specified without the ``_libretro.so`` extension, and the ROM name should be specified without the extension
-11) Running ``docker run dew`` in your terminal should now start the bot. If you want to run the bot in the background, use ``docker run -d dew``
+11) Running ``docker run --restart unless-stopped dew`` in your terminal should now start the bot. If you want to run the bot in the background, use ``docker run -d --restart unless-stopped dew``
 
 The Dockerfile exposes a volume to store the saves, you can mount it to a folder on your host machine to keep your saves between rebuilds
 
